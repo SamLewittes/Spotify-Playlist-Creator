@@ -6,6 +6,7 @@ from bs4 import BeautifulSoup
 import requests
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
+import datetime
 
 class Playlist:
 	def __init__(self,artists,songs):
@@ -17,8 +18,14 @@ def main():
 
 	driver = webdriver.Chrome(r'C:\Users\Sam Lewittes\Downloads\chromedriver\chromedriver.exe')
 
-	playlist = Playlist(get_artists(driver), get_songs(driver))
-	print(playlist.artists)
+	#playlist = Playlist(get_artists(driver), get_songs(driver))
+	#print(playlist.artists)
+
+	spotify_login(driver)
+	create_playlist(driver)
+
+
+
 	#create_playlist()
 	#add_songs()
 	#delete_old_playlist()
@@ -31,6 +38,10 @@ def main():
 def get_artists(driver):
 
 	spotify_login(driver)
+
+	driver.get("https://open.spotify.com/collection/artists")
+
+	sleep(.5)
 
 	artist_list = driver.find_elements_by_xpath("//*[@class='mo-info-name']")
 
@@ -55,7 +66,6 @@ def spotify_login(driver):
 	driver.find_element_by_id('login-button').click()
 	sleep(.5)
 
-	driver.get("https://open.spotify.com/collection/artists")
 
 
 
@@ -63,8 +73,18 @@ def spotify_login(driver):
 def get_songs(driver):
 	return[]
 
-def create_playlist():
-	pass
+def create_playlist(driver):
+	
+	driver.get("https://open.spotify.com/collection/playlists")
+	sleep(.5)
+
+	driver.find_element_by_class_name("asideButton").click()
+	sleep(.1)
+	driver.find_element_by_class_name("inputBox-input").send_keys("New Songs - " + str(datetime.datetime.today().strftime('%m-%d-%Y')))
+	sleep(.5)
+	driver.find_elements_by_xpath("//*[@class='button-group__item']")[1].click()
+
+	sleep(.5)
 
 def add_songs():
 	pass
