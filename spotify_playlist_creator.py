@@ -22,7 +22,8 @@ def main():
 	#print(playlist.artists)
 
 	spotify_login(driver)
-	create_playlist(driver)
+	#create_playlist(driver)
+	delete_old_playlist(driver)
 
 
 
@@ -66,10 +67,6 @@ def spotify_login(driver):
 	driver.find_element_by_id('login-button').click()
 	sleep(.5)
 
-
-
-
-
 def get_songs(driver):
 	return[]
 
@@ -89,8 +86,26 @@ def create_playlist(driver):
 def add_songs():
 	pass
 
-def delete_old_playlist():
-	pass
+def delete_old_playlist(driver):
+
+	driver.get("https://open.spotify.com/collection/playlists")
+	sleep(.5)
+
+	list_of_playlists = driver.find_elements_by_xpath("//*[@class='mo-info-name']")
+
+	for i in range(len(list_of_playlists)):
+
+		if ("New Songs - ") in list_of_playlists[i].get_attribute("title"):
+			driver.get(list_of_playlists[i].get_attribute("href"))
+			sleep(.5)
+
+			driver.find_element_by_xpath("//*[@class='btn btn-transparent btn--narrow']").click()
+			sleep(.5)
+			driver.find_elements_by_xpath("//*[@class='react-contextmenu-item']")[7].click()
+			sleep(.1)
+			driver.find_elements_by_xpath("//*[@class='button-group__item']")[1].click()
+			sleep(.5)
+
 
 
 def get_new_songs():
