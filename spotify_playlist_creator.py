@@ -13,10 +13,9 @@ def main():
 
 	artists = get_artists(driver)
 	songs = get_songs(driver,artists)
+	delete_old_playlist(driver)
 	create_playlist(driver)
 	add_songs(driver,songs)
-
-
 
 def get_artists(driver):
 
@@ -117,16 +116,20 @@ def delete_old_playlist(driver):
 
 	for i in range(len(list_of_playlists)):
 
-		if ("New Songs - ") in list_of_playlists[i].get_attribute("title"):
-			driver.get(list_of_playlists[i].get_attribute("href"))
-			sleep(.5)
+		try:
+			if ("New Songs - ") in list_of_playlists[i].get_attribute("title"):
+				driver.get(list_of_playlists[i].get_attribute("href"))
+				sleep(.5)
 
-			driver.find_elements_by_xpath("//*[@class='btn btn-transparent btn--narrow']")[0].click()
-			sleep(.5)
-			driver.find_elements_by_xpath("//*[@class='react-contextmenu-item']")[7].click()
-			sleep(.1)
-			driver.find_elements_by_xpath("//*[@class='button-group__item']")[1].click()
-			sleep(.5)
+				#deletes playlist
+				driver.find_elements_by_xpath("//*[@class='btn btn-transparent btn--narrow']")[0].click()
+				sleep(.5)
+				driver.find_elements_by_xpath("//*[@class='react-contextmenu-item']")[7].click()
+				sleep(.1)
+				driver.find_elements_by_xpath("//*[@class='button-group__item']")[1].click()
+				sleep(.5)
+		except:
+			pass
 
 
 def get_new_songs():
