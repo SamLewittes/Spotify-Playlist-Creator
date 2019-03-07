@@ -1,4 +1,3 @@
-import csv
 from time import sleep
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -13,7 +12,7 @@ def main():
 
 	artists = get_artists(driver)
 	songs = get_songs(driver,artists)
-	delete_old_playlist(driver)
+	new_songs = delete_old_playlist(driver, songs)
 	create_playlist(driver)
 	add_songs(driver,songs)
 
@@ -87,7 +86,7 @@ def add_songs(driver, songs):
 		sleep(2)
 
 		action = ActionChains(driver)
-		action.move_to_element((driver.find_elements_by_xpath("//*[@class='tracklist-name ellipsis-one-line']"))[0]).perform();
+		action.move_to_element((driver.find_elements_by_xpath("//*[@class='tracklist-name ellipsis-one-line']"))[0]).perform()
 		action.context_click().perform()
 		sleep(.3)
 		driver.find_elements_by_xpath("//*[@class='react-contextmenu-item']")[3].click()
@@ -107,7 +106,9 @@ def add_songs(driver, songs):
 
 		
 
-def delete_old_playlist(driver):
+def delete_old_playlist(driver, songs):
+
+	old_songs = []
 
 	driver.get("https://open.spotify.com/collection/playlists")
 	sleep(.5)
@@ -119,10 +120,18 @@ def delete_old_playlist(driver):
 		try:
 			if ("New Songs - ") in list_of_playlists[i].get_attribute("title"):
 				driver.get(list_of_playlists[i].get_attribute("href"))
+				sleep(1.5)
+
+				old_songs = get_old_songs(driver)
+
 				sleep(.5)
 
 				#deletes playlist
-				driver.find_elements_by_xpath("//*[@class='btn btn-transparent btn--narrow']")[0].click()
+
+				action = ActionChains(driver)
+				action.move_to_element((driver.find_elements_by_xpath("//*[@class='btn btn-transparent btn--narrow']")[0])).perform();
+				action.context_click().perform()
+
 				sleep(.5)
 				driver.find_elements_by_xpath("//*[@class='react-contextmenu-item']")[7].click()
 				sleep(.1)
@@ -131,9 +140,24 @@ def delete_old_playlist(driver):
 		except:
 			pass
 
+	for old in old_songs:
+		for song in songs:
+			if song in old:
+				songs.remove(song)
 
-def get_new_songs():
-	pass
+	return songs
+
+
+def get_old_songs(driver):
+
+	amount = int(driver.find_element_by_xpath("//*[@class='TrackListHeader__text-silence TrackListHeader__entity-additional-info']").text.split(" ")[0])
+	old_songs = driver.find_elements_by_xpath("//*[@class='tracklist-name ellipsis-one-line']")[:amount]
+
+	for index in range(len(old_songs)):
+		old_songs[index] = old_songs[index].text
+
+	return old_songs
+
 
 def get_play_count():
 	pass
@@ -141,7 +165,5 @@ def get_play_count():
 def create_graph():
 	pass
 
-def add_to_csv():
-	pass
 
 main()
