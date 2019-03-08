@@ -2,8 +2,6 @@ from time import sleep
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver import ActionChains
-import matplotlib.pyplot as plt
-from matplotlib.animation import FuncAnimation
 import datetime
 
 def main():
@@ -15,6 +13,10 @@ def main():
 	new_songs = delete_old_playlist(driver, songs)
 	create_playlist(driver)
 	add_songs(driver,songs)
+
+	print("Songs added to playlist:\n")
+	for song in new_songs:
+		print(song)
 
 def get_artists(driver):
 
@@ -157,13 +159,5 @@ def get_old_songs(driver):
 		old_songs[index] = old_songs[index].text
 
 	return old_songs
-
-
-def get_play_count():
-	pass
-
-def create_graph():
-	pass
-
 
 main()
