@@ -3,6 +3,7 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver import ActionChains
 import datetime
+import getpass
 
 def main():
 
@@ -35,7 +36,8 @@ def get_artists(driver):
 
 def spotify_login(driver):
 	username_request = input("Please enter your spotify username/email: ")
-	password_request = input("Please enter your spotify password: ")
+	#password_request = input("Please enter your spotify password: ")
+	password_request = getpass.getpass("Please enter your spotify password: ")
 
 	driver.get("https://accounts.spotify.com/en/login?continue=https:%2F%2Fopen.spotify.com%2Fbrowse%2Ffeatured")
 
